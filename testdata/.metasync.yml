@@ -1,0 +1,5 @@
+---
+remoteRepository: https://github.com/jgrancell/metasync
+remoteRootPath: testdata/template
+remoteRef: v1.0.0
+remoteRefType: tag
