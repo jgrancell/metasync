@@ -1,0 +1,11 @@
+# Binaries
+packaging/binaries
+
+# Security / Code Scanning
+.scannerwork
+cover.out
+coverage.txt
+gosec-report.json
+sonar-project.properties
+
+# Test-Generated Data
