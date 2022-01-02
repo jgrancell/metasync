@@ -1,5 +1,6 @@
 ---
-remoteRepository: https://github.com/jgrancell/metasync
-remoteRootPath: testdata/template
-remoteRef: v1.0.0
-remoteRefType: tag
+## These determine where we are pulling our template data from
+sourceRepository: https://github.com/jgrancell/metasync
+sourceRefType: branch
+sourceRef: templates
+sourceTemplatePath: golang

@@ -9,12 +9,12 @@ import (
 )
 
 type Configuration struct {
-	CloneViaSSH       bool
-	ConfigurationPath string
-	TargetRef         string
-	TargetRefType     string
-	TargetRepository  string
-	TargetRootPath    string
+	CloneViaSSH        bool
+	ConfigurationPath  string
+	SourceRepoRef      string `yaml:"sourceRef"`
+	SourceRepoRefType  string `yaml:"sourceRefType"`
+	SourceRepository   string `yaml:"sourceRepository"`
+	SourceTemplatePath string `yaml:"sourceTemplatePath"`
 }
 
 func (c *Configuration) Load() error {

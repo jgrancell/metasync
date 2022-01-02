@@ -11,6 +11,7 @@ import (
 
 var (
 	configPath string
+	debug      bool
 	dryRun     bool
 	subcommand string
 	verbose    bool
@@ -30,6 +31,7 @@ func Run() int {
 	flagset.StringVar(&configPath, "conf", ".metasync.yml", "The metasync YAML configuration file to read from.")
 	flagset.BoolVar(&dryRun, "dryrun", false, "Dry-run outputs the changes that would be made without changing any files.")
 	flagset.BoolVar(&verbose, "verbose", false, "Provide verbose output.")
+	flagset.BoolVar(&debug, "debug", false, "Provide debugging output.")
 
 	// Detecting our subcommand and parsing CLI flags
 	switch os.Args[1] {
@@ -54,6 +56,7 @@ func Run() int {
 	// Initializing the application
 	app := &app.App{
 		Configuration: conf,
+		Debug:         debug,
 		Dryrun:        dryRun,
 		Subcommand:    subcommand,
 		Verbose:       verbose,
