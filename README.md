@@ -15,3 +15,11 @@ It gets extremely time consuming maintaining significant numbers of repositories
 Rather than having to go into each repository individually to make file changes, metasync provides a straightforward way to sync your metafiles with a master template repository.
 
 Metasync allows you to keep your metafiles in sync, and even version them against specific template repository tags, branches, or individual refs.
+
+## Examples of Use
+
+| Command | Explanation | Minimum Version |
+| :-----: | :---------: | :-------------: |
+| `metasync sync` | Syncs the local repository with a remote source defined in a local `.metasync.yml` files | ------- |
+| `metasync sync -dryrun` | Shows required changes between the local repo and source templates, without making changes. | ------- |
+| `metasync sync -diff` | Shows inline diffs of changes between the remote source template and the local files. | ------- |
