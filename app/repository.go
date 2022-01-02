@@ -55,7 +55,6 @@ func (r *Repository) Checkout() error {
 }
 
 func (r *Repository) FindSyncCandidates() error {
-	fmt.Println("Identifying out of sync files.")
 	sourceFiles, err := r.ListFiles()
 	if err != nil {
 		return utils.ReturnError("unable to list files from source repository", err)
@@ -79,26 +78,21 @@ func (r *Repository) FindSyncCandidates() error {
 			fmt.Println("Sync candidate", c.Name, "could not be read properly. Skipping.")
 		}
 		if ok {
-			if r.ShowDiffs {
-				fmt.Println()
-				fmt.Println("File", c.Name, "is out of sync and requires changes:")
-				fmt.Println("▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼")
-				fmt.Println(c.Diff)
-				fmt.Println("▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲")
-			} else {
-				fmt.Println("  - File", c.Name, "requires sync.")
-			}
 			r.CandidateFiles = append(r.CandidateFiles, c)
 		}
 	}
 
-	if len(r.CandidateFiles) == 0 {
-		fmt.Println("  ** Nothing requires sync at this time.")
-	}
+	r.PrintCandidates()
 	return nil
 }
 
 func (r *Repository) ExecuteCandidateSync() error {
+	for _, c := range r.CandidateFiles {
+		err := c.Sync()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -108,4 +102,31 @@ func (r *Repository) ListFiles() ([]fs.FileInfo, error) {
 		return nil, err
 	}
 	return files, nil
+}
+
+func (r *Repository) PrintCandidates() {
+	if len(r.CandidateFiles) == 0 {
+		fmt.Println("All files are in sync.")
+		return
+	}
+
+	if !r.ShowDiffs {
+		fmt.Println("Out of sync files:")
+	}
+
+	for _, c := range r.CandidateFiles {
+		if r.ShowDiffs {
+			fmt.Println()
+			fmt.Println(c.Name + ":")
+			if len(c.Diff) > 0 {
+				fmt.Println(c.Diff)
+			} else {
+				fmt.Println("File does not exist in target.")
+			}
+			fmt.Println("")
+			fmt.Println("----------------------------------------")
+		} else {
+			fmt.Println("  -", c.Name)
+		}
+	}
 }

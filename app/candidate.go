@@ -2,6 +2,7 @@ package app
 
 import (
 	"bytes"
+	"io/fs"
 	"io/ioutil"
 	"os"
 
@@ -15,6 +16,7 @@ type SyncCandidate struct {
 	SourceFile     string
 	TargetContents []byte
 	TargetFile     string
+	TargetMode     fs.FileMode
 }
 
 func (c *SyncCandidate) TargetExists() bool {
@@ -27,11 +29,25 @@ func (c *SyncCandidate) TargetExists() bool {
 	return true
 }
 
+func (c *SyncCandidate) GetWriteMode(path string) error {
+	file, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+
+	c.TargetMode = file.Mode()
+	return nil
+}
+
 func (c *SyncCandidate) RequiresSync() (bool, error) {
+	var err error
+	if c.SourceContents, err = c.LoadContents(c.SourceFile); err != nil {
+		return false, err
+	}
+
 	if c.TargetExists() {
-		var err error
-		c.SourceContents, err = c.LoadContents(c.SourceFile)
-		if err != nil {
+		// Getting the file mode for the target file
+		if err := c.GetWriteMode(c.TargetFile); err != nil {
 			return false, err
 		}
 
@@ -48,6 +64,9 @@ func (c *SyncCandidate) RequiresSync() (bool, error) {
 			return false, nil
 		}
 	}
+	if err := c.GetWriteMode(c.SourceFile); err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -57,4 +76,8 @@ func (c *SyncCandidate) LoadContents(file string) ([]byte, error) {
 		return nil, err
 	}
 	return contents, nil
+}
+
+func (c *SyncCandidate) Sync() error {
+	return os.WriteFile(c.TargetFile, c.SourceContents, c.TargetMode)
 }

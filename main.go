@@ -12,11 +12,12 @@ import (
 var (
 	configPath string
 	debug      bool
+	diff       bool
 	dryRun     bool
 	subcommand string
 	verbose    bool
 
-	version string = "1.0.0"
+	version string = "0.1.0"
 )
 
 func main() {
@@ -32,6 +33,7 @@ func Run() int {
 	flagset.BoolVar(&dryRun, "dryrun", false, "Dry-run outputs the changes that would be made without changing any files.")
 	flagset.BoolVar(&verbose, "verbose", false, "Provide verbose output.")
 	flagset.BoolVar(&debug, "debug", false, "Provide debugging output.")
+	flagset.BoolVar(&diff, "diff", false, "Show diffs for files that require sync.")
 
 	// Detecting our subcommand and parsing CLI flags
 	switch os.Args[1] {
@@ -58,6 +60,7 @@ func Run() int {
 		Configuration: conf,
 		Debug:         debug,
 		Dryrun:        dryRun,
+		ShowDiffs:     diff,
 		Subcommand:    subcommand,
 		Verbose:       verbose,
 		Version:       version,

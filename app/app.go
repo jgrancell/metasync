@@ -12,6 +12,7 @@ type App struct {
 	Configuration *configuration.Configuration
 	Debug         bool
 	Dryrun        bool
+	ShowDiffs     bool
 	Subcommand    string
 	Verbose       bool
 	Version       string
@@ -29,13 +30,13 @@ func (a *App) Run() int {
 }
 
 func (a *App) Sync(target string) int {
-	fmt.Println("Beginning repository sync.")
+	a.LogDebug("Beginning repository sync.")
 
 	repo := &Repository{
 		Ref:                    a.Configuration.SourceRepoRef,
 		RefType:                a.Configuration.SourceRepoRefType,
 		RequiresAuthentication: false,
-		ShowDiffs:              true,
+		ShowDiffs:              a.ShowDiffs,
 		TemplatesDirectory:     a.Configuration.SourceTemplatePath,
 		Url:                    a.Configuration.SourceRepository,
 	}
@@ -72,13 +73,22 @@ func (a *App) Sync(target string) int {
 	}
 
 	// Step 4: we update any sync candidate files if we don't have dryrun enabled
-	if a.Dryrun {
-		fmt.Println("*** Dryrun mode is enabled. Exiting without making changes.")
+	if len(repo.CandidateFiles) == 0 {
 		return 0
 	} else {
-		fmt.Println("Updating all out-of-sync files.")
-		err := repo.ExecuteCandidateSync()
-		return utils.VisualizeError(err)
+		if a.Dryrun {
+			fmt.Println()
+			fmt.Println("*** Dryrun mode is enabled. Exiting without making changes.")
+			return 0
+		} else {
+			fmt.Println()
+			a.LogDebug("Updating all out-of-sync files.")
+			err := repo.ExecuteCandidateSync()
+			if err == nil {
+				fmt.Println("Success! All files have been synced.")
+			}
+			return utils.VisualizeError(err)
+		}
 	}
 }
 
