@@ -10,9 +10,6 @@ build:
 	go build -o ${BINARY}
 	chmod +x ${BINARY}
 
-testbuild: build
-	./${BINARY} deregister -name test-foobar -prom https://1.1.1.1.com:9090  -grafana https://grafana.infr-d.com -key eyJrIjoiZXhrdVkzZUhSU1BHN1VZV2g3cUZaeWV5dUhGbkhEcFMiLCJuIjoiVGVzdCBLZXkgMiIsImlkIjoxfQ==
-
 install: build
 	mkdir -p ${GOBIN}
 	mv ${BINARY} ${GOPATH}/bin/${BINARY}
