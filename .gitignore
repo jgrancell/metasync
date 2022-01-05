@@ -1,6 +1,5 @@
 # Binaries
 packaging/binaries
-metasync
 
 # Security / Code Scanning
 .scannerwork

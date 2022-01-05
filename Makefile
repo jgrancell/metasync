@@ -10,9 +10,6 @@ build:
 	go build -o ${BINARY}
 	chmod +x ${BINARY}
 
-testbuild: install
-	cd ./testdata; ${BINARY} sync
-
 install: build
 	mkdir -p ${GOBIN}
 	mv ${BINARY} ${GOPATH}/bin/${BINARY}
