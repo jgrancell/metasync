@@ -1,4 +1,7 @@
 #!/bin/bash
+## Copyright 2020-2022 Josh Grancell. All rights reserved.
+## Use of this source code is governed by an MIT License
+## that can be found in the LICENSE file.
 
 set -e
 echo "mode: atomic" > coverage.txt

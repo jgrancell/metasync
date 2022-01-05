@@ -1,3 +1,6 @@
+## Copyright 2020-2022 Josh Grancell. All rights reserved.
+## Use of this source code is governed by an MIT License
+## that can be found in the LICENSE file.
 TEST?=$$(go list ./... | grep -v vendor)
 WORKDIR=$$(pwd)
 BINARY=$$(pwd | xargs basename)
@@ -14,14 +17,10 @@ install: build
 	mkdir -p ${GOBIN}
 	mv ${BINARY} ${GOPATH}/bin/${BINARY}
 
-binaries: build
-	rm -rf packaging/binaries
-	mkdir -p packaging/binaries
-	bash packaging/generate-binaries.sh ${BINARY} ${WORKDIR}
+## Packaging tasks
+-include packaging/Makefile
 
-package: binaries
-	bash packaging/generate-containers.sh ${WORKDIR}/packaging
-
+## Testing tasks
 test:
 	rm -f coverage.txt profile.out
 	rm -f gosec-report.json
@@ -33,7 +32,3 @@ test-sonarqube: test
 
 test-view: test
 	go tool cover -html=coverage.txt
-
-clean:
-	rm -rf packaging/binaries
-	rm -rf packaging/workdir
