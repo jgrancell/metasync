@@ -3,19 +3,9 @@
 ## that can be found in the LICENSE file.
 TEST?=$$(go list ./... | grep -v vendor)
 WORKDIR=$$(pwd)
-BINARY=$$(pwd | xargs basename)
-VERSION=$$(grep version main.go | head -n1 | cut -d\" -f2)
 GOBIN=${GOPATH}/bin
 
-default: build
-
-build:
-	go build -o ${BINARY}
-	chmod +x ${BINARY}
-
-install: build
-	mkdir -p ${GOBIN}
-	mv ${BINARY} ${GOPATH}/bin/${BINARY}
+default: test
 
 ## Testing tasks
 test:
